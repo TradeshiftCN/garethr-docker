@@ -101,12 +101,10 @@ class docker::install {
       Package[$kernelpackage] -> Package['docker']
     }
   }
-
-  if $docker::version {
-    $dockerpackage = "${docker::package_name}-${docker::version}"
-  } else {
-    $dockerpackage = $docker::package_name
-  }
+ 
+  # Assume that no version-appended packages exist and 
+  # the package manager can actually understand versions.
+  $dockerpackage = $docker::package_name
 
   if $docker::manage_package {
     if $docker::repo_opt {
