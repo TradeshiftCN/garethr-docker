@@ -38,20 +38,6 @@ define docker::cert(
   $registry_client_cert = "${registry_cert_path}/client.cert"
   $registry_client_key  = "${registry_cert_path}/client.key"
 
-  file { 'docker_conf_dir' :
-    ensure => directory,
-    path   => '/etc/docker',
-    mode   => '0400',
-    owner  => root,
-    group  => root,
-  } ->
-  file { 'cert_dir' :
-    ensure => directory,
-    path   => '/etc/docker/certs.d',
-    mode   => '0400',
-    owner  => root,
-    group  => root,
-  } ->
   file { $registry_cert_path :
     ensure => directory,
     path   => $registry_cert_path,

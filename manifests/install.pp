@@ -109,4 +109,20 @@ class docker::install {
       }))
     }
   }
+
+  file { 'docker_conf_dir' :
+    ensure => directory,
+    path   => '/etc/docker',
+    mode   => '0400',
+    owner  => root,
+    group  => root,
+  } ->
+  file { 'cert_dir' :
+    ensure => directory,
+    path   => '/etc/docker/certs.d',
+    mode   => '0400',
+    owner  => root,
+    group  => root,
+  }
+
 }
