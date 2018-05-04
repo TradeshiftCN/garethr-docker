@@ -23,6 +23,9 @@ StartLimitInterval=20
 StartLimitBurst=5
 TimeoutStartSec=0
 Environment="HOME=/root"
+
+ExecStartPre=-<%= @docker_version_script %>
+
 <%- if @before_start %>ExecStartPre=-<%= @before_start %>
 <% end -%>
 ExecStartPre=-/usr/bin/<%= @docker_command %> kill <%= @sanitised_title %>
@@ -30,18 +33,18 @@ ExecStartPre=-/usr/bin/<%= @docker_command %> kill <%= @sanitised_title %>
 <% else %>ExecStartPre=-/usr/bin/<%= @docker_command %> create \
     <%= @docker_run_flags %> \
     --name <%= @sanitised_title %> \
-    <%= @image %> \
+    ${image} \
     <% if @command %> <%= @command %><% end %>
 <% end -%>
 <% @extra_systemd_parameters.each do |key, value| -%><%= key %>=<%= value %>
 <% end -%>
-<%- if @pull_on_start %>ExecStartPre=-/usr/bin/<%= @docker_command %> pull <%= @image %>
+<%- if @pull_on_start %>ExecStartPre=-/usr/bin/<%= @docker_command %> pull ${image}
 <% end -%>
 <%- if @remove_container_on_start %>
 ExecStart=/usr/bin/<%= @docker_command %> run \
         <%= @docker_run_flags %> \
         --name <%= @sanitised_title %> \
-        <%= @image %> \
+        ${image} \
         <% if @command %> <%= @command %><% end %>
 <% else %>
 ExecStart=/usr/bin/<%= @docker_command %> start -a <%= @sanitised_title %>
