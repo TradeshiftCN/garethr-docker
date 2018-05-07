@@ -14,7 +14,7 @@ fi
 
 if [ -n "${image_version}" ]
  then
-  $systemctl_bin set-environment image="${image_name}:${image_version}"
+  $systemctl_bin set-environment <%= @sanitised_title %>_image="${image_name}:${image_version}"
 else
-  $systemctl_bin set-environment image="${image_name}"
+  $systemctl_bin set-environment <%= @sanitised_title %>_image="${image_name}"
 fi

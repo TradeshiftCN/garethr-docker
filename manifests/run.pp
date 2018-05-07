@@ -316,6 +316,7 @@ define docker::run(
           ensure  => present,
           content => template($docker_version_template),
           mode    => '0755',
+          notify  => Service["${service_prefix}${sanitised_title}"],
         }
       }
 
