@@ -208,17 +208,6 @@ define docker::run(
     $sanitised_after_array = regsubst($after_array, '[^0-9A-Za-z.\-]', '-', 'G')
   }
 
-  if (':' in $image) and !('@' in $image) {
-    # tag (version) usage
-    $image_tokens = split($image, ':')
-    $image_name = $image_tokens[0]
-    $image_version = $image_tokens[1]
-  } else {
-    # we leave Docker client to deal with it
-    $image_name = $image
-    $image_version = ''
-  }
-
   if $restart {
 
     $cidfile = "/var/run/${service_prefix}${sanitised_title}.cid"
@@ -245,8 +234,6 @@ define docker::run(
           ($::operatingsystem == 'Ubuntu' and versioncmp($::operatingsystemrelease, '15.04') >= 0) {
           $initscript = "/etc/systemd/system/${service_prefix}${sanitised_title}.service"
           $init_template = 'docker/etc/systemd/system/docker-run.erb'
-          $docker_version_script = "/etc/systemd/system/docker-${sanitised_title}-version.sh"
-          $docker_version_template = 'docker/etc/systemd/system/docker-version.erb'
           $uses_systemd = true
           $mode = '0644'
         } else {
@@ -310,15 +297,6 @@ define docker::run(
 
     }
     else {
-
-      if $uses_systemd {
-        file { $docker_version_script:
-          ensure  => present,
-          content => template($docker_version_template),
-          mode    => '0755',
-        }
-      }
-
       file { $initscript:
         ensure  => present,
         content => template($init_template),

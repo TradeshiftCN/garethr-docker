@@ -55,23 +55,6 @@ else
     }
 fi
 
-image_name="<%= @image_name %>"
-image_version="<%= @image_version %>"
-version_override_file="/etc/tradeshift/<%= @sanitised_title %>/VERSION_OVERRIDE"
-
-if [ -r $version_override_file ]
- then
-  . $version_override_file
-  [ -n "$VERSION" ] && image_version="${VERSION}"
-fi
-
-if [ -n "${image_version}" ]
-then
-  image="${image_name}:${image_version}"
-else
-  image="${image_name}"
-fi
-
 export HOME=/root/
 docker="/usr/bin/<%= @docker_command %>"
 prog="<%= @service_prefix %><%= @sanitised_title %>"
@@ -100,17 +83,17 @@ start() {
         $docker create \
         <%= @docker_run_flags %> \
         --name <%= @sanitised_title %> \
-        $image\
+        <%= @image %> \
         <% if @command %> <%= @command %><% end %>
     <% end -%>
     <% if @pull_on_start -%>
-        $docker pull $image
+        $docker pull <%= @image %>
     <% end -%>
     <% if @remove_container_on_stop -%>
     $docker run \
     <%= @docker_run_flags %> \
     --name <%= @sanitised_title %> \
-    $image \
+    <%= @image %> \
     <% if @command %> <%= @command %><% end %>
     <% else %>
     $docker start -a <%= @sanitised_title %>
