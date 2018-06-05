@@ -57,6 +57,7 @@ fi
 
 export HOME=/root/
 docker="/usr/bin/<%= @docker_command %>"
+image="<%= @image %>"
 prog="<%= @service_prefix %><%= @sanitised_title %>"
 if [ -d /var/lock/subsys ]; then
     lockfile="/var/lock/subsys/$prog"
@@ -83,17 +84,17 @@ start() {
         $docker create \
         <%= @docker_run_flags %> \
         --name <%= @sanitised_title %> \
-        <%= @image %> \
+        $image \
         <% if @command %> <%= @command %><% end %>
     <% end -%>
     <% if @pull_on_start -%>
-        $docker pull <%= @image %>
+        $docker pull $image
     <% end -%>
     <% if @remove_container_on_stop -%>
     $docker run \
     <%= @docker_run_flags %> \
     --name <%= @sanitised_title %> \
-    <%= @image %> \
+    $image \
     <% if @command %> <%= @command %><% end %>
     <% else %>
     $docker start -a <%= @sanitised_title %>
